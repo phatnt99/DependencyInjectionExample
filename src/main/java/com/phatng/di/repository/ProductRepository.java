@@ -11,7 +11,7 @@ import java.util.List;
 public class ProductRepository {
 
     @Inject
-    protected ConsoleDatabaseManager<Product> consoleDatabaseManager;
+    protected ConsoleDatabaseManager consoleDatabaseManager;
 
     public List<Product> getAllProducts() {
         return consoleDatabaseManager.query(Product.class);

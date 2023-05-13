@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ConsoleDatabaseManager<T> {
-    public List<T> query(Class<T> clazz) {
+public class ConsoleDatabaseManager {
+    public <T> List<T> query(Class<T> clazz) {
         try {
             return List.of(
                     clazz.newInstance(),

@@ -6,6 +6,7 @@ import com.phatng.di.annotation.Inject;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -16,14 +17,12 @@ public class DIContainer {
     public DIContainer() {
         // scan all classes in the classpath for @Component annotation
         List<Object> highLevelComponents = new ArrayList<>();
-        for (Class<?> clazz : getAllClasses()) {
-            if (clazz.isAnnotationPresent(Component.class)) {
-                // create an instance of the component and store it in the map
-                Object component = createComponent(clazz);
-                components.put(clazz, component);
-                if (isHighLevelComponent(clazz)) {
-                    highLevelComponents.add(component);
-                }
+        for (Class<?> clazz : getAllClassesWithGivenAnnotation(Component.class)) {
+            // create an instance of the component and store it in the map
+            Object component = createComponent(clazz);
+            components.put(clazz, component);
+            if (isHighLevelComponent(clazz)) {
+                highLevelComponents.add(component);
             }
         }
 
@@ -40,9 +39,9 @@ public class DIContainer {
         return type.cast(components.get(type));
     }
 
-    private Set<Class> getAllClasses() {
-        Reflections reflections = new Reflections("com.phatng.di", new SubTypesScanner(false));
-        return new HashSet<>(reflections.getSubTypesOf(Object.class));
+    private Set<Class> getAllClassesWithGivenAnnotation(Class<? extends Annotation> clazz) {
+        Reflections reflections = new Reflections("com.phatng.di");
+        return new HashSet<>(reflections.getTypesAnnotatedWith(clazz));
     }
 
     private boolean isHighLevelComponent(Class<?> clazz) {
